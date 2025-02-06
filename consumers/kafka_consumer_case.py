@@ -36,7 +36,7 @@ import utils.utils_config as config
 from utils.utils_consumer import create_kafka_consumer
 from utils.utils_logger import logger
 from utils.utils_producer import verify_services, is_topic_available
-from .db_sqlite_case import init_db, insert_message
+from db_sqlite_case import init_db, insert_message
 
 #####################################
 # Function to process a single message
