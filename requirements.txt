@@ -93,7 +93,7 @@ python-dotenv
 # ======================================================
 
 # Apache Kafka Python client (six was removed so add it separately)
-kafka-python
+kafka-python-ng
 six
 
 # Alternative: pin the older version.
