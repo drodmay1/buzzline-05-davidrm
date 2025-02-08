@@ -19,27 +19,31 @@ conn.close()
 # Convert timestamp to datetime
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 
+# Create a figure for multiple plots
+plt.figure(figsize=(15, 10))
+
 # Plot 1: Sentiment Score Distribution
-df['sentiment'].plot(kind='hist', bins=10, figsize=(8, 5))
+plt.subplot(3, 1, 1)  # 3 rows, 1 column, position 1
+df['sentiment'].plot(kind='hist', bins=10)
 plt.title('Sentiment Score Distribution')
 plt.xlabel('Sentiment Score')
 plt.ylabel('Frequency')
-plt.show()
 
 # Plot 2: Message Length Distribution
-plt.figure()  # Start a new figure
-df['message_length'].plot(kind='hist', bins=10, figsize=(8, 5))
+plt.subplot(3, 1, 2)  # 3 rows, 1 column, position 2
+df['message_length'].plot(kind='hist', bins=10)
 plt.title('Message Length Distribution')
 plt.xlabel('Message Length')
 plt.ylabel('Frequency')
-plt.show()
 
 # Plot 3: Keyword Mentions (if meaningful)
 if 'keyword_mentioned' in df.columns:
-    plt.figure()  # Start a new figure
-    df['keyword_mentioned'].value_counts().plot(kind='bar', figsize=(8, 5))
+    plt.subplot(3, 1, 3)  # 3 rows, 1 column, position 3
+    df['keyword_mentioned'].value_counts().plot(kind='bar')
     plt.title('Keyword Mentions in Messages')
     plt.xlabel('Keyword')
     plt.ylabel('Count')
-    plt.xticks(rotation=45)
-    plt.show()
+
+# Show all plots at once
+plt.tight_layout()  # Adjust spacing between plots
+plt.show()
