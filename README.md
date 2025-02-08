@@ -4,6 +4,8 @@
 
 This project is a Kafka-based data pipeline that processes and visualizes real-time streaming data. The pipeline includes a Kafka producer, a custom Kafka consumer, and a visualization dashboard.
 
+The custom Kafka consumer reads messages from the Kafka topic, processes the data to extract attributes like sentiment, message_length and keyword mentioned, and stores the data in an SQLite database (buzz,sqlite). This setup supports real-time data processing and analysis.
+
 ### Key Features:
 - **Producer**: Sends JSON messages to the Kafka topic `buzzline`.
 - **Consumer**: Reads messages from the Kafka topic, processes them and stores them in an SQLite database.
@@ -26,17 +28,24 @@ This project is a Kafka-based data pipeline that processes and visualizes real-t
    source .venv/bin/activate
 
 3. **Install Dependencies**:
-  `pip install -r requirements.txt`
-
+```
+pip install -r requirements.txt`
+```
 4. **Start Kafka and Zookeeper**:
 - Start Zookeeper
-`./bin/zookeeper-server-start.sh config/zookeeper.properties`
+```
+./bin/zookeeper-server-start.sh config/zookeeper.properties`
+```
 
 - Start Kafka
-`./bin/kafka-server-start.sh config/server.properties`
+```
+./bin/kafka-server-start.sh config/server.properties`
+```
 
 5. **Create the Kafka Topic**:
-`./bin/kafka-topics.sh --create --topic buzzline --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1`
+```
+./bin/kafka-topics.sh --create --topic buzzline --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1`
+```
 
 ### Custom Kafka Consumer
 The custom Kafka consumer:
@@ -68,6 +77,6 @@ python consumers/kafka_consumer_davidrm.py
 ```
 
 3. **Run the Viualization Dashboard**
-   ```
-   python consumers/dashboard_visualization.py
+```
+python consumers/dashboard_visualization.py
 ```
