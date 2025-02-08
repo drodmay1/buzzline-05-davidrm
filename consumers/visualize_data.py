@@ -27,6 +27,7 @@ plt.ylabel('Frequency')
 plt.show()
 
 # Plot 2: Message Length Distribution
+plt.figure()  # Start a new figure
 df['message_length'].plot(kind='hist', bins=10, figsize=(8, 5))
 plt.title('Message Length Distribution')
 plt.xlabel('Message Length')
@@ -35,6 +36,7 @@ plt.show()
 
 # Plot 3: Keyword Mentions (if meaningful)
 if 'keyword_mentioned' in df.columns:
+    plt.figure()  # Start a new figure
     df['keyword_mentioned'].value_counts().plot(kind='bar', figsize=(8, 5))
     plt.title('Keyword Mentions in Messages')
     plt.xlabel('Keyword')
