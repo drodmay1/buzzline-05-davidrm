@@ -258,3 +258,4 @@
 {"message": "I just loved a movie! It was amazing.", "author": "Bob", "timestamp": "2025-02-08 15:23:56", "category": "entertainment", "sentiment": 0.09, "keyword_mentioned": "movie", "message_length": 37}
 {"message": "I just loved game! It was exciting.", "author": "Eve", "timestamp": "2025-02-08 15:24:01", "category": "gaming", "sentiment": 0.35, "keyword_mentioned": "game", "message_length": 35}
 {"message": "I just shared a movie! It was funny.", "author": "Eve", "timestamp": "2025-02-08 15:24:06", "category": "entertainment", "sentiment": 0.01, "keyword_mentioned": "movie", "message_length": 36}
+{"message": "I just tried an app! It was exciting.", "author": "Bob", "timestamp": "2025-02-08 15:24:11", "category": "other", "sentiment": 0.71, "keyword_mentioned": "other", "message_length": 37}
