@@ -19,14 +19,25 @@ conn.close()
 # Convert timestamp to datetime
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 
-# Create a figure with a grid layout
+# Ensure sentiment column is numeric and drop invalid rows
+df['sentiment'] = pd.to_numeric(df['sentiment'], errors='coerce')  # Convert invalid values to NaN
+df_clean = df.dropna(subset=['sentiment'])  # Remove rows with NaN in sentiment
+
+# Set timestamp as the index for resampling
+if not df_clean.empty:
+    df_clean.set_index('timestamp', inplace=True)
+
+# Create a figure with subplots (2x2 layout)
 fig, axs = plt.subplots(2, 2, figsize=(12, 10))  # 2 rows, 2 columns
 
 # Plot 1: Sentiment Score Distribution
-axs[0, 0].hist(df['sentiment'], bins=10, color='blue', edgecolor='black')
-axs[0, 0].set_title('Sentiment Score Distribution')
-axs[0, 0].set_xlabel('Sentiment Score')
-axs[0, 0].set_ylabel('Frequency')
+if not df_clean.empty:
+    axs[0, 0].hist(df_clean['sentiment'], bins=10, color='blue', edgecolor='black')
+    axs[0, 0].set_title('Sentiment Score Distribution')
+    axs[0, 0].set_xlabel('Sentiment Score')
+    axs[0, 0].set_ylabel('Frequency')
+else:
+    axs[0, 0].text(0.5, 0.5, 'No valid sentiment data', fontsize=12, ha='center')
 
 # Plot 2: Message Length Distribution
 axs[0, 1].hist(df['message_length'], bins=10, color='green', edgecolor='black')
@@ -42,14 +53,18 @@ if 'keyword_mentioned' in df.columns:
     axs[1, 0].set_xlabel('Keyword')
     axs[1, 0].set_ylabel('Count')
     axs[1, 0].tick_params(axis='x', rotation=45)
+else:
+    axs[1, 0].text(0.5, 0.5, 'No keyword data available', fontsize=12, ha='center')
 
-# Plot 4: Time-Based Sentiment Trend (Optional)
-if 'timestamp' in df.columns:
-    df.set_index('timestamp', inplace=True)
-    df.resample('1T').mean()['sentiment'].plot(ax=axs[1, 1], color='red')
+# Plot 4: Sentiment Trend Over Time
+if not df_clean.empty:  # Only proceed if there's valid sentiment data
+    sentiment_trend = df_clean['sentiment'].resample('1min').mean()  # Resample by 1 minute
+    sentiment_trend.plot(ax=axs[1, 1], color='red')
     axs[1, 1].set_title('Sentiment Trend Over Time')
     axs[1, 1].set_xlabel('Time')
     axs[1, 1].set_ylabel('Average Sentiment')
+else:
+    axs[1, 1].text(0.5, 0.5, 'No sentiment trend data', fontsize=12, ha='center')
 
 # Adjust layout and display
 plt.tight_layout()
