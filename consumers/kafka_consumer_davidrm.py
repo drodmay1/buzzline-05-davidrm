@@ -1,5 +1,5 @@
 """
-kafka_consumer_case.py
+kafka_consumer_davidrm.py
 
 Consume json messages from a live data file. 
 Insert the processed messages into a database.
@@ -39,6 +39,12 @@ from utils.utils_producer import verify_services, is_topic_available
 from db_sqlite_case import init_db, insert_message
 
 #####################################
+# Define Keywords to Track
+#####################################
+
+KEYWORDS = ["urgent", "error", "warning"]
+
+#####################################
 # Function to process a single message
 # #####################################
 
@@ -46,14 +52,22 @@ from db_sqlite_case import init_db, insert_message
 def process_message(message: dict) -> None:
     """
     Process and transform a single JSON message.
-    Converts message fields to appropriate data types.
+    Tracks keyword occurrences in the message.
 
     Args:
         message (dict): The JSON message as a Python dictionary.
+
+    Returns:
+        dict: Processed message with keyword counts.
     """
-    logger.info("Called process_message() with:")
+    logger.info("Processing message:")
     logger.info(f"   {message=}")
     try:
+        # Count keyword occurrences in the message text
+        message_text = message.get("message", "").lower()
+        keyword_counts = {keyword: message_text.count(keyword) for keyword in KEYWORDS}
+
+        # Create processed message dictionary
         processed_message = {
             "message": message.get("message"),
             "author": message.get("author"),
@@ -62,7 +76,11 @@ def process_message(message: dict) -> None:
             "sentiment": float(message.get("sentiment", 0.0)),
             "keyword_mentioned": message.get("keyword_mentioned"),
             "message_length": int(message.get("message_length", 0)),
+            "urgent_count": keyword_counts["urgent"],
+            "error_count": keyword_counts["error"],
+            "warning_count": keyword_counts["warning"],
         }
+
         logger.info(f"Processed message: {processed_message}")
         return processed_message
     except Exception as e:
@@ -142,7 +160,13 @@ def consume_messages_from_kafka(
         for message in consumer:
             processed_message = process_message(message.value)
             if processed_message:
-                insert_message(processed_message, sql_path)
+                # Store the message in SQlite
+                try:
+                    insert_message(processed_message, sql_path)
+                    logger.info(f"✅ Message successfully stored: {processed_message}")
+                except Exception as e:
+                    logger.error(f"❌ Error inserting message into SQLite: {e}")
+                    continue # Skip this message and continue processing the next one
 
     except Exception as e:
         logger.error(f"ERROR: Could not consume messages from Kafka: {e}")
